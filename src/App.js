@@ -25,13 +25,13 @@ function App(props) {
   return (
     <Router>
       <Switch>
-        <PublicRoute exact path="/login" user={user} >
+        <PublicRoute  path="/login" user={user} >
           <SignInView></SignInView>
         </PublicRoute>
-        <PrivateRoute  path="/" user={user}>
+        <PrivateRoute exact path="/" user={user}>
           <HomeView user={user}></HomeView>
         </PrivateRoute>
-        <PrivateRoute exact path="/new-password" user={user}>
+        <PrivateRoute  path="/new-password" user={user}>
           <NewPassword></NewPassword>
         </PrivateRoute>
       </Switch>
