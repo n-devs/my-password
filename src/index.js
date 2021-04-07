@@ -8,7 +8,7 @@ import rootReducer from './reducers/rootReducer';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import reportWebVitals from './reportWebVitals';
 import firebase from './services/firebase';
-import { useSelector, useDispatch } from 'react-redux';
+// import { useSelector, useDispatch } from 'react-redux';
 const store = createStore(rootReducer)
 
 firebase.auth().onAuthStateChanged((user) => {

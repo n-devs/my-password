@@ -25,7 +25,7 @@ const useStyles = makeStyles({
 });
 
 function HomeView(props) {
-    const { user } = props
+    // const { user } = props
     const classes = useStyles();
 
     const history = useHistory()
