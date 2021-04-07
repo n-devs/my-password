@@ -1,14 +1,9 @@
-import React, { useContext, createContext, useState } from "react";
-import firebase from 'firebase';
-import { useSelector, useDispatch } from 'react-redux';
+import React from "react";
+// import firebase from 'firebase';
+// import { useSelector, useDispatch } from 'react-redux';
 import {
   BrowserRouter as Router,
-  Switch,
-  Route,
-  Link,
-  Redirect,
-  useHistory,
-  useLocation
+  Switch
 } from "react-router-dom";
 import PublicRoute from './components/PublicRoute';
 import PrivateRoute from './components/PrivateRoute';

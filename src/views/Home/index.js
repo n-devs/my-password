@@ -1,19 +1,13 @@
-import React, { useContext, createContext, useState } from "react";
-import firebase from 'firebase';
-import { useSelector, useDispatch } from 'react-redux';
+import React from "react";
+// import firebase from 'firebase';
+// import { useSelector, useDispatch } from 'react-redux';
 import {
-    BrowserRouter as Router,
-    Switch,
-    Route,
-    Link,
-    Redirect,
-    useHistory,
-    useLocation
+    useHistory
 } from "react-router-dom";
 import Button from '@material-ui/core/Button';
 import AddIcon from '@material-ui/icons/Add';
 import { makeStyles } from '@material-ui/core/styles';
-import PrivateRoute from '../../components/PrivateRoute';
+// import PrivateRoute from '../../components/PrivateRoute';
 
 import './style.css';
 
