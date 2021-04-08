@@ -56,7 +56,8 @@ function HomeView(props) {
         });
 
 
-    }, [])
+    }, [user.uid]);
+
     return (<div className="full-screen">
         <div>
             <SearchBar
@@ -65,8 +66,8 @@ function HomeView(props) {
             />
         </div>
         <div>
-            {dataList.map(_list => (
-                <DetailedAccordion data={_list}></DetailedAccordion>
+            {dataList.map((_list, i) => (
+                <DetailedAccordion key={i} data={_list}></DetailedAccordion>
             ))}
         </div>
         {/* {data.map(_data => {
@@ -74,7 +75,7 @@ function HomeView(props) {
         })} */}
         <div className="button-add-password">
             <Button
-                borderRadius="50%"
+                // borderRadius="50%"
                 variant="contained"
                 color="primary"
                 size="large"
