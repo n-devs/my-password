@@ -17,6 +17,7 @@ import InputLabel from '@material-ui/core/InputLabel';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import FormControl from '@material-ui/core/FormControl';
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import {
     useHistory
 } from "react-router-dom";
@@ -37,6 +38,10 @@ const useStyles = makeStyles((theme) => ({
     },
     resetContainer: {
         padding: theme.spacing(3),
+    },
+    rootButton: {
+        borderRadius: "50%",
+        padding: 20
     },
 }));
 
@@ -103,6 +108,10 @@ export default function NewPassword(props) {
     const handleMouseDownPassword = (event) => {
         event.preventDefault();
     };
+
+    function toLink() {
+        history.push('/')
+    }
 
     return (
         <div className={classes.root}>
@@ -208,6 +217,18 @@ export default function NewPassword(props) {
           </Button>
                 </Paper>
             )}
+            <div className="button-back-home">
+                <Button
+                    // borderRadius="50%"
+                    variant="contained"
+                    color="primary"
+                    size="large"
+                    className={classes.rootButton}
+                    onClick={toLink}
+                >
+                    <ArrowBackIcon />
+                </Button>
+            </div>
         </div>
     );
 }

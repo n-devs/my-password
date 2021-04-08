@@ -3,15 +3,22 @@
     display: flex;
     padding: 20px 0px;
 }
+
 .text-field-flex {
     width: 100%;
 }
 
 p.ellipsis {
-    white-space: nowrap; 
+    white-space: nowrap;
     /* width: 200px;  */
     /* border: 1px solid #000000; */
     overflow: hidden;
     text-overflow: ellipsis;
     margin: 0;
-  }
+}
+
+.button-back-home {
+    position: fixed;
+    bottom: 15px;
+    left: 15px;
+}
