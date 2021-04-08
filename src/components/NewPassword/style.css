@@ -1,0 +1,17 @@
+.box-center-input {
+    justify-content: center;
+    display: flex;
+    padding: 20px 0px;
+}
+.text-field-flex {
+    width: 100%;
+}
+
+p.ellipsis {
+    white-space: nowrap; 
+    /* width: 200px;  */
+    /* border: 1px solid #000000; */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin: 0;
+  }

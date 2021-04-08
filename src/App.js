@@ -27,7 +27,7 @@ function App(props) {
           <HomeView user={user}></HomeView>
         </PrivateRoute>
         <PrivateRoute  path="/new-password" user={user}>
-          <NewPassword></NewPassword>
+          <NewPassword user={user}></NewPassword>
         </PrivateRoute>
       </Switch>
     </Router>

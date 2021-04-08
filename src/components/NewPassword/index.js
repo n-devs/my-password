@@ -1,4 +1,5 @@
 import React from 'react';
+// import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
@@ -7,7 +8,21 @@ import StepContent from '@material-ui/core/StepContent';
 import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
-import TextField from '@material-ui/core/Typography';
+import TextField from '@material-ui/core/TextField';
+import Grid from '@material-ui/core/Grid';
+import IconButton from '@material-ui/core/IconButton';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import Input from '@material-ui/core/Input';
+import InputLabel from '@material-ui/core/InputLabel';
+import Visibility from '@material-ui/icons/Visibility';
+import VisibilityOff from '@material-ui/icons/VisibilityOff';
+import FormControl from '@material-ui/core/FormControl';
+import {
+    useHistory
+} from "react-router-dom";
+import firebase from '../../services/firebase'
+
+import './style.css';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -29,41 +44,44 @@ function getSteps() {
     return ['Service name', 'My Email', 'My Password', 'Create ad'];
 }
 
-function GetStepContent(props) {
-    switch (props.step) {
-        case 0:
-            return (<React.Fragment>
-                <TextField required id="standard-required" label="Service Name" />
-
-            </React.Fragment>);
-        case 1:
-            return (<React.Fragment>
-                <TextField required id="email" label="Email" />
-                <TextField required id="phoneNumber" label="PhoneNumber" />
-            </React.Fragment>);
-        case 2:
-            return (<React.Fragment>
-                <TextField
-                    id="standard-password-input"
-                    label="Password"
-                    type="password"
-                    autoComplete="current-password"
-                />
-            </React.Fragment>);
-        case 3:
-            return ``
-        default:
-            return 'Unknown step';
-    }
-}
-
-export default function NewPassword() {
+export default function NewPassword(props) {
     const classes = useStyles();
     const [activeStep, setActiveStep] = React.useState(0);
+    const [values, setValues] = React.useState({
+        serviceName: '',
+        email: '',
+        phoneNumber: '',
+        password: '',
+    })
+    const { user } = props;
     const steps = getSteps();
+    const history = useHistory()
 
     const handleNext = () => {
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
+        if (activeStep === steps.length - 1) {
+            var db = firebase.firestore();
+            var bookCollect = db.collection("users").doc(user.uid).collection("books")
+            bookCollect.add(values)
+                .then((docRef) => {
+                    console.log("Document successfully written!");
+                    bookCollect.doc(docRef.id).collection("historys").add({
+                        password: values.password,
+                        created: new Date()
+                    }).then((historyRef) => {
+                        console.log("Document successfully written!");
+                        history.push('/')
+                        window.location.reload()
+                    }).catch((error) => {
+                        console.error("Error writing document: ", error);
+                    });
+
+                })
+                .catch((error) => {
+                    console.error("Error writing document: ", error);
+                });
+
+        }
     };
 
     const handleBack = () => {
@@ -74,15 +92,91 @@ export default function NewPassword() {
         setActiveStep(0);
     };
 
+    const handleChange = (prop) => (event) => {
+        setValues({ ...values, [prop]: event.target.value });
+    };
+
+    const handleClickShowPassword = () => {
+        setValues({ ...values, showPassword: !values.showPassword });
+    };
+
+    const handleMouseDownPassword = (event) => {
+        event.preventDefault();
+    };
+
     return (
         <div className={classes.root}>
+
             <Stepper activeStep={activeStep} orientation="vertical">
                 {steps.map((label, index) => (
                     <Step key={label}>
                         <StepLabel>{label}</StepLabel>
                         <StepContent>
                             {/* <Typography>{getStepContent(index)}</Typography> */}
-                            <GetStepContent step={index}></GetStepContent>
+                            {/* <GetStepContent step={index}></GetStepContent> */}
+                            {index === 0 ? (<div className="box-center-input">
+                                <TextField id="serviceName" value={values.serviceName} className="text-field-flex" label="Service Name" onChange={handleChange('serviceName')} />
+                            </div>) : index === 1 ? (<div className="box-center-input">
+                                <Grid container spacing={3}>
+                                    <Grid item xs={12}>
+                                        <TextField id="email" value={values.email} className="text-field-flex" label="Email" onChange={handleChange('email')} />
+                                    </Grid>
+                                    <Grid item xs={12}>
+                                        <TextField id="phoneNumber" value={values.phoneNumber} className="text-field-flex" label="PhoneNumber" onChange={handleChange('phoneNumber')} />
+                                    </Grid>
+                                </Grid>
+                            </div>) : index === 2 ? (<div className="box-center-input">
+                                <FormControl className="text-field-flex">
+                                    <InputLabel htmlFor="standard-adornment-password">Password</InputLabel>
+                                    <Input
+                                        id="standard-adornment-password"
+                                        type={values.showPassword ? 'text' : 'password'}
+                                        value={values.password}
+                                        onChange={handleChange('password')}
+                                        endAdornment={
+                                            <InputAdornment position="end">
+                                                <IconButton
+                                                    aria-label="toggle password visibility"
+                                                    onClick={handleClickShowPassword}
+                                                    onMouseDown={handleMouseDownPassword}
+                                                >
+                                                    {values.showPassword ? <Visibility /> : <VisibilityOff />}
+                                                </IconButton>
+                                            </InputAdornment>
+                                        }
+                                    />
+                                </FormControl>
+                            </div>) : index === 3 ? (
+                                <div className="box-center-input">
+                                    <Grid container spacing={1}>
+                                        <Grid item xs={6} >
+                                            <p className="ellipsis">{"Service Name :"}</p>
+
+                                        </Grid>
+                                        <Grid item xs={6} >
+                                            <p className="ellipsis">{values.serviceName}</p>
+                                        </Grid>
+                                        <Grid item xs={6} >
+                                            <p className="ellipsis">{"Email :"}</p>
+                                        </Grid>
+                                        <Grid item xs={6} >
+                                            <p className="ellipsis">{values.email}</p>
+                                        </Grid>
+                                        <Grid item xs={6} >
+                                            <p className="ellipsis">{"PhoneNumber :"}</p>
+                                        </Grid>
+                                        <Grid item xs={6} >
+                                            <p className="ellipsis">{values.phoneNumber}</p>
+                                        </Grid>
+                                        <Grid item xs={6} >
+                                            <p className="ellipsis">{"Password :"}</p>
+                                        </Grid>
+                                        <Grid item xs={6} >
+                                            <p className="ellipsis">{values.password}</p>
+                                        </Grid>
+                                    </Grid>
+                                </div>
+                            ) : "0"}
                             <div className={classes.actionsContainer}>
                                 <div>
                                     <Button
