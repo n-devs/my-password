@@ -22,3 +22,8 @@ p.ellipsis {
     bottom: 15px;
     left: 15px;
 }
+
+.button-border-radius {
+    border-radius: 50%;
+    padding: 20px;
+}
