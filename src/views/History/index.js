@@ -25,6 +25,7 @@ export default function HistoryView(props) {
     const { user } = props
     const history = useHistory();
     const query = useQuery()
+    const [myId] =React.useState(`${query.get("id")}`)
     const [historyList, setHistoryList] = React.useState([])
 
     const classes = useStyles();
@@ -32,18 +33,20 @@ export default function HistoryView(props) {
     function toLink() {
         history.push('/')
     }
-
+  
+  
     React.useEffect(() => {
         var db = firebase.firestore();
         var bookCollect = db.collection("users").doc(user.uid).collection("books")
-        bookCollect.doc(query.get("id")).collection("historys").get().then((querySnapshot) => {
+    
+        bookCollect.doc(myId).collection("historys").get().then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
                 // doc.data() is never undefined for query doc snapshots
                 console.log(doc.id, " => ", doc.data());
                 setHistoryList(prevArray => ([...prevArray, { ...doc.data(), id: doc.id }]))
             });
         });
-    }, [])
+    }, [myId, user.uid])
 
     return (<React.Fragment>
         <HistoryList user={user} historyList={historyList.sort(function (a, b) {
