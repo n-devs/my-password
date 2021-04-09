@@ -49,8 +49,8 @@
   "related_applications": [
     {
       "platform": "play",
-      "id": "ca.bigbackpack.getinstalledrelatedapps",
-      "url": "https://my-password.vercel.app/"
+      "id": "com.ndevs.mypassword",
+      "url": "https://github.com/n-devs/my-password-android/releases/download/v1.0-beta.0/app-debug.apk"
     },
     {
       "platform": "windows",
