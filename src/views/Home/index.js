@@ -9,11 +9,12 @@ import AddIcon from '@material-ui/icons/Add';
 import { makeStyles } from '@material-ui/core/styles';
 // import PrivateRoute from '../../components/PrivateRoute';
 import SearchBar from '../../components/SearchBar';
-import DetailedAccordion from '../../components/DetailedAccordion';
+// import renderLoader from '../../components/renderLoader';
 import firebase from '../../services/firebase';
 
 import './style.css';
 
+const DetailedAccordion = React.lazy(() => import('../../components/DetailedAccordion'));
 const useStyles = makeStyles({
     rootButton: {
         borderRadius: "50%",
@@ -29,9 +30,14 @@ function HomeView(props) {
     const classes = useStyles();
 
     const history = useHistory()
+    const [expanded, setExpanded] = React.useState(false);
+
+    const handleChange = (panel) => (event, isExpanded) => {
+        setExpanded(isExpanded ? panel : false);
+    };
 
     function toLink() {
-        history.push('/new-password')
+        history.push('/add-data')
     }
 
     async function updateInput(input) {
@@ -59,16 +65,26 @@ function HomeView(props) {
     }, [user.uid]);
 
     return (<div className="full-screen">
-        <div>
+        <div style={{
+            position: 'fixed',
+            top: 0,
+            zIndex: 1,
+            width: '100%',
+        }}>
             <SearchBar
                 input={input}
                 onChange={updateInput}
             />
         </div>
-        <div>
+        <div style={{
+            marginTop: 85,
+            height: '120%'
+        }}>
+            {/* <React.Suspense fallback={renderLoader()}> */}
             {dataList.map((_list, i) => (
-                <DetailedAccordion key={i} data={_list}></DetailedAccordion>
+                <DetailedAccordion key={i} i={i} expanded={expanded === `panel${i}`} onChange={handleChange(`panel${i}`)} data={_list} user={user}></DetailedAccordion>
             ))}
+            {/* </React.Suspense> */}
         </div>
         {/* {data.map(_data => {
 

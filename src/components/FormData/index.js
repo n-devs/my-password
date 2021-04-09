@@ -17,18 +17,19 @@ import InputLabel from '@material-ui/core/InputLabel';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import FormControl from '@material-ui/core/FormControl';
-import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import VpnKeyIcon from '@material-ui/icons/VpnKey';
 import {
     useHistory
 } from "react-router-dom";
+
 import firebase from '../../services/firebase'
 
 import './style.css';
 
+const { random } = require('lodash')
+
 const useStyles = makeStyles((theme) => ({
-    root: {
-        width: '100%',
-    },
+
     button: {
         marginTop: theme.spacing(1),
         marginRight: theme.spacing(1),
@@ -38,18 +39,14 @@ const useStyles = makeStyles((theme) => ({
     },
     resetContainer: {
         padding: theme.spacing(3),
-    },
-    rootButton: {
-        borderRadius: "50%",
-        padding: 20
-    },
+    }
 }));
 
 function getSteps() {
     return ['Service name', 'My Email', 'My Password', 'Create ad'];
 }
 
-export default function NewPassword(props) {
+export default function FormData(props) {
     const classes = useStyles();
     const [activeStep, setActiveStep] = React.useState(0);
     const [values, setValues] = React.useState({
@@ -58,21 +55,36 @@ export default function NewPassword(props) {
         phoneNumber: '',
         password: '',
     })
-    const { user } = props;
+    const { user, update } = props;
     const steps = getSteps();
-    const history = useHistory()
+    const history = useHistory();
+
+    function generatePassword(length, allowNumbers = true, allowSpecialCharacters = true) {
+        const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz' +
+            (allowNumbers ? '0123456789' : '') + (allowSpecialCharacters ? '!@#$%^&*()_+' : '');
+        let text = '';
+        for (let i = 0; i < length; i++) {
+            text += alphabet.charAt(random(alphabet.length - 1));
+        }
+        return text;
+    }
+
+    function createPassword() {
+        setValues({ ...values, password: generatePassword(10) })
+    }
 
     const handleNext = () => {
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
         if (activeStep === steps.length - 1) {
             var db = firebase.firestore();
             var bookCollect = db.collection("users").doc(user.uid).collection("books")
-            bookCollect.add(values)
-                .then((docRef) => {
-                    console.log("Document successfully written!");
-                    bookCollect.doc(docRef.id).collection("historys").add({
+            const date = new Date()
+            if (update !== undefined) {
+                bookCollect.doc(update.id).update(values).then(() => {
+                    console.log("Document successfully updated!");
+                    bookCollect.doc(update.id).collection("historys").add({
                         password: values.password,
-                        created: new Date()
+                        created: date.toISOString()
                     }).then((historyRef) => {
                         console.log("Document successfully written!");
                         history.push('/')
@@ -80,12 +92,28 @@ export default function NewPassword(props) {
                     }).catch((error) => {
                         console.error("Error writing document: ", error);
                     });
-
-                })
-                .catch((error) => {
-                    console.error("Error writing document: ", error);
                 });
+            } else {
 
+                bookCollect.add(values)
+                    .then((docRef) => {
+                        console.log("Document successfully written!");
+                        bookCollect.doc(docRef.id).collection("historys").add({
+                            password: values.password,
+                            created: date.toISOString()
+                        }).then((historyRef) => {
+                            console.log("Document successfully written!");
+                            history.push('/')
+                            window.location.reload()
+                        }).catch((error) => {
+                            console.error("Error writing document: ", error);
+                        });
+
+                    })
+                    .catch((error) => {
+                        console.error("Error writing document: ", error);
+                    });
+            }
         }
     };
 
@@ -109,12 +137,16 @@ export default function NewPassword(props) {
         event.preventDefault();
     };
 
-    function toLink() {
-        history.push('/')
-    }
+    React.useEffect(() => {
+        // console.log(update);
+        if (update !== undefined) {
+            setValues(update)
+        }
+    }, [update])
+
 
     return (
-        <div className={classes.root}>
+        <React.Fragment>
 
             <Stepper activeStep={activeStep} orientation="vertical">
                 {steps.map((label, index) => (
@@ -135,6 +167,7 @@ export default function NewPassword(props) {
                                     </Grid>
                                 </Grid>
                             </div>) : index === 2 ? (<div className="box-center-input">
+
                                 <FormControl className="text-field-flex">
                                     <InputLabel htmlFor="standard-adornment-password">Password</InputLabel>
                                     <Input
@@ -143,18 +176,25 @@ export default function NewPassword(props) {
                                         value={values.password}
                                         onChange={handleChange('password')}
                                         endAdornment={
-                                            <InputAdornment position="end">
-                                                <IconButton
-                                                    aria-label="toggle password visibility"
-                                                    onClick={handleClickShowPassword}
-                                                    onMouseDown={handleMouseDownPassword}
-                                                >
-                                                    {values.showPassword ? <Visibility /> : <VisibilityOff />}
-                                                </IconButton>
-                                            </InputAdornment>
+                                            <React.Fragment>
+
+                                                <InputAdornment position="end">
+                                                    <IconButton
+                                                        aria-label="toggle password visibility"
+                                                        onClick={handleClickShowPassword}
+                                                        onMouseDown={handleMouseDownPassword}
+                                                    >
+                                                        {values.showPassword ? <Visibility /> : <VisibilityOff />}
+                                                    </IconButton>
+                                                    <IconButton color="primary" aria-label="generate-password" component="span" onClick={createPassword}>
+                                                        <VpnKeyIcon />
+                                                    </IconButton>
+                                                </InputAdornment>
+                                            </React.Fragment>
                                         }
                                     />
                                 </FormControl>
+
                             </div>) : index === 3 ? (
                                 <div className="box-center-input">
                                     <Grid container spacing={1}>
@@ -213,22 +253,11 @@ export default function NewPassword(props) {
                 <Paper square elevation={0} className={classes.resetContainer}>
                     <Typography>All steps completed - you&apos;re finished</Typography>
                     <Button onClick={handleReset} className={classes.button}>
-                        Reset
-          </Button>
+                        {"Reset"}
+                    </Button>
                 </Paper>
             )}
-            <div className="button-back-home">
-                <Button
-                    // borderRadius="50%"
-                    variant="contained"
-                    color="primary"
-                    size="large"
-                    className={classes.rootButton}
-                    onClick={toLink}
-                >
-                    <ArrowBackIcon />
-                </Button>
-            </div>
-        </div>
+
+        </React.Fragment>
     );
 }

@@ -32,7 +32,7 @@ export default function SearchBar(props) {
     const classes = useStyles();
 
     return (
-        <Paper component="div" className={classes.root}>
+        <Paper component="div" className={classes.root} square>
 
             <InputBase
                 value={props.input}
