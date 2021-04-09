@@ -1,7 +1,33 @@
 {
   "short_name": "My Password",
   "name": "My Password",
+  "categories": [
+    "books",
+    "password",
+    "storage",
+    "note"
+  ],
   "icons": [
+    {
+      "src": "favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon",
+      "purpose": "maskable"
+    },
+    {
+      "src": "logo192.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "maskable"
+    },
+    {
+      "src": "logo512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "maskable"
+    }
+  ],
+  "screenshots": [
     {
       "src": "favicon.ico",
       "sizes": "64x64 32x32 24x24 16x16",
@@ -19,7 +45,31 @@
     }
   ],
   "start_url": ".",
-  "display": "standalone",
+  "display": "fullscreen",
   "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "background_color": "none",
+  "url": "https://my-password.vercel.app/",
+  "manifestUrl": "https://my-password.vercel.app/manifest.json",
+  "lang": "th",
+  "orientation": "landscape",
+  "description": "My Password Application",
+  "scope": "/",
+  "prefer_related_applications": true,
+  "gcm_sender_id": "590675023138",
+  "related_applications": [
+    {
+      "platform": "play",
+      "id": "ca.bigbackpack.getinstalledrelatedapps",
+      "url": "https://my-password.vercel.app/"
+    },
+    {
+      "platform": "windows",
+      "id": "MyApp_9jmtgj1pbbz6e!App",
+      "url": "https://my-password.vercel.app/"
+    },
+    {
+      "platform": "webapp",
+      "url": "https://my-password.vercel.app/manifest.json"
+    }
+  ]
 }
