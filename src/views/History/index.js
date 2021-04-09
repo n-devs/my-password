@@ -43,7 +43,7 @@ export default function HistoryView(props) {
                 setHistoryList(prevArray => ([...prevArray, { ...doc.data(), id: doc.id }]))
             });
         });
-    }, [query,user.uid])
+    }, [])
 
     return (<React.Fragment>
         <HistoryList user={user} historyList={historyList.sort(function (a, b) {
