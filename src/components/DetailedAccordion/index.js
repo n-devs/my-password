@@ -117,8 +117,11 @@ export default function DetailedAccordion(props) {
         /* Copy the text inside the text field */
         document.execCommand("copy");
         clipboard.copy(copyText.value)
+
+        window.NativeAndroid.copyToClipboard(copyText.value);
         /* Alert the copied text */
         console.log("Copied the text: " + copyText.value);
+
     }
 
     return (
